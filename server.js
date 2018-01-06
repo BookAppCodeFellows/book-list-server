@@ -5,6 +5,7 @@ const pg = require('pg');
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
+const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL || 'postgress://localhost:5432/books_app'
 const cors = require('cors');
 const app = express();
