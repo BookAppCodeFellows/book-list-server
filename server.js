@@ -5,20 +5,25 @@ const pg = require('pg');
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
-const PORT = process.env.PORT || 3000;
+const DATABASE_URL = process.env.DATABASE_URL || 'postgress://localhost:5432/books_app'
 const cors = require('cors');
 const app = express();
-const conString = 'postgres://localhost:5432/book_app';
-const client = new pg.Client(conString);
-
-app.use(cors());
+const client = new pg.Client(DATABASE_URL);
 
 client.connect();
+app.use(cors());
+
 client.on('error', err => {
   console.error(err);
  });
 
-app.get('/test', (req, res) => res.send('Hellow World'));
+app.get('/books', (req, res) => {
+    client.query(`
+      SELECT * FROM books;  
+    `
+    ).then(result => res.send(result.rows))
+    .catch(error => console.error(error))
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
