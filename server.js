@@ -18,9 +18,9 @@ client.on('error', err => {
   console.error(err);
  });
 
-app.get('/books', (req, res) => {
+app.get('/api/v1/books', (req, res) => {
     client.query(`
-      SELECT * FROM books;  
+      SELECT book_id, title, author, image_url FROM books;  
     `
     ).then(result => res.send(result.rows))
     .catch(error => console.error(error))
