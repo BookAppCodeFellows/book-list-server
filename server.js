@@ -6,7 +6,8 @@ const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
-const DATABASE_URL = process.env.DATABASE_URL || 'postgress://localhost:5432/books_app'
+//const DATABASE_URL = process.env.DATABASE_URL || 'postgress://localhost:5432/books_app'
+const DATABASE_URL = process.env.DATABASE_URL || 'postgres://postgres:GiGahurtZ42@localhost:5432/books_app'
 const cors = require('cors');
 const app = express();
 const client = new pg.Client(DATABASE_URL);
@@ -48,7 +49,7 @@ app.post('/api/v1/books', express.json(), express.urlencoded({extended: true}), 
   .catch(error => console.error(error))
 });
 
-app.post('/api/v1/books', express.json(), express.urlencoded({extended: true}), (req, res) => {
+app.put('/api/v1/books/:id', express.json(), express.urlencoded({extended: true}), (req, res) => {
   client.query(`
     UPDATE books
     SET title=$1, author=$2, image_url=$3, isbn=$4, description=$5
@@ -64,6 +65,13 @@ app.post('/api/v1/books', express.json(), express.urlencoded({extended: true}), 
   ).then(result => res.send('Updated successfully'))
   .catch(error => console.error(error))
 });
+
+app.delete('/api/v1/books/:id', (req, res) => {
+  client.query(`
+      DELETE FROM books WHERE id=${req.params.id};
+  `).then(result => res.send('Book deleted successfully'))
+  .catch(err => console.error(err))
+})
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
