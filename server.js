@@ -47,6 +47,24 @@ app.post('/api/v1/books', express.json(), express.urlencoded({extended: true}), 
   ).then(result => res.send('Inserted successfully'))
   .catch(error => console.error(error))
 });
+
+app.post('/api/v1/books', express.json(), express.urlencoded({extended: true}), (req, res) => {
+  client.query(`
+    UPDATE books
+    SET title=$1, author=$2, image_url=$3, isbn=$4, description=$5
+    WHERE id=$6
+  `, [
+       req.body.title,
+       req.body.author,
+       req.body.image_url,
+       req.body.isbn,
+       req.body.description,
+       req.params.id
+     ]
+  ).then(result => res.send('Updated successfully'))
+  .catch(error => console.error(error))
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./public'));
